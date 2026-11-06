@@ -1,0 +1,2566 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DailyPulse 每日脈動 · 全方位新聞儀表板</title>
+  <meta name="description" content="自動化每日新聞精緻儀表板，涵蓋重大事件、財金、時事、股市、娛樂、會計與 ESG 負面爭議監警七大板塊。">
+  
+  <!-- 字型系統：Inter、JetBrains Mono 與 Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome 6 圖示庫 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- 內嵌全域樣式表 (免路徑依賴，任何位置點開皆 100% 正常顯示) -->
+  <style>
+/* ==========================================================================
+   DailyPulse 每日脈動 - 現代典雅淺色新聞儀表板樣式表 (Light Editorial Aesthetic)
+   符合 AGENTS.md 規範：預設高質感淺色雜誌排版、七大分類專屬識別色彩、立體精緻卡片
+   ========================================================================== */
+
+:root {
+  /* 預設現代典雅淺色模式 (Light Editorial Mode - Default) */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  --bg-card: #ffffff;
+  --bg-card-hover: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.92);
+  
+  --border-subtle: rgba(226, 232, 240, 0.85);
+  --border-card: rgba(226, 232, 240, 0.95);
+  --border-focus: rgba(37, 99, 235, 0.45);
+
+  --text-primary: #0f172a;       /* 深邃曜石深藍灰 - 高對比且閱讀舒適 */
+  --text-secondary: #334155;     /* 次級沉穩內文灰 */
+  --text-muted: #64748b;         /* 詮釋資料與輔助字灰 */
+  --text-inverse: #ffffff;
+
+  /* 七大分類專屬識別色系 (High-Legibility Accents) */
+  --color-major: #e11d48;         /* 重大事件 - 晶曜緋紅 */
+  --color-finance: #059669;       /* 財金焦點 - 翡翠青綠 */
+  --color-current: #2563eb;       /* 時事要聞 - 蔚藍寶石 */
+  --color-stock: #7c3aed;         /* 股市觀測 - 科技霓紫 */
+  --color-entertainment: #ea580c; /* 娛樂生活 - 夕陽珊瑚橘 */
+  --color-accounting: #0891b2;    /* 會計審計 - 專業青靛 */
+  --color-esg: #dc2626;           /* ESG 負面新聞 - 警示鮮紅 */
+
+  /* ESG 風險分級色彩 */
+  --risk-high: #dc2626;
+  --risk-medium: #d97706;
+  --risk-low: #059669;
+
+  /* 圓角半徑 */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  
+  /* 典雅細緻立體陰影 */
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 16px -2px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 12px 28px -4px rgba(15, 23, 42, 0.08);
+  --shadow-glow: 0 0 24px rgba(37, 99, 235, 0.08);
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 深色模式切換支援 (可選切換) */
+[data-theme="dark"] {
+  --bg-primary: #0b0f19;
+  --bg-secondary: #111827;
+  --bg-tertiary: #1f2937;
+  --bg-card: rgba(17, 24, 39, 0.85);
+  --bg-card-hover: rgba(31, 41, 55, 0.95);
+  --bg-glass: rgba(15, 23, 42, 0.85);
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-card: rgba(255, 255, 255, 0.1);
+  --border-focus: rgba(99, 102, 241, 0.5);
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-inverse: #0f172a;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 20px -2px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 25px rgba(59, 130, 246, 0.15);
+}
+
+/* 基礎重設 */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-primary);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.03) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(225, 29, 72, 0.03) 0px, transparent 50%);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 容器寬度 */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 1.75rem;
+}
+
+/* ==========================================================================
+   全域頂部導覽列 (Sticky Header)
+   ========================================================================== */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4.6rem;
+  gap: 1.5rem;
+}
+
+/* 品牌標識 */
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.brand-icon-wrapper {
+  position: relative;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.25rem;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.pulse-dot {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  background-color: #059669;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  animation: pulse-ring 2s infinite ease-in-out;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(5, 150, 105, 0); }
+  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(5, 150, 105, 0); }
+}
+
+.brand-text h1 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-badge {
+  font-size: 0.68rem;
+  font-family: var(--font-mono);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background-color: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
+  font-weight: 700;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+}
+
+.brand-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* 搜尋框 */
+.search-container {
+  flex: 1;
+  max-width: 440px;
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.68rem 1.1rem 0.68rem 2.6rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  outline: none;
+  transition: var(--transition);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+}
+
+.search-input:focus {
+  border-color: var(--border-focus);
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.search-clear-btn {
+  position: absolute;
+  right: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: none;
+  padding: 0.2rem;
+}
+
+/* 功能操作按鈕 */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.action-btn:hover {
+  background-color: var(--bg-tertiary);
+  border-color: rgba(203, 213, 225, 1);
+  transform: translateY(-1px);
+}
+
+.action-btn.btn-primary {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+.action-btn.btn-primary:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.action-btn.icon-only {
+  padding: 0.6rem;
+  border-radius: 50%;
+  width: 2.45rem;
+  height: 2.45rem;
+  justify-content: center;
+}
+
+/* ==========================================================================
+   副標題資訊列 (Date & Status Ribbon)
+   ========================================================================== */
+.status-ribbon {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.84rem;
+  padding: 0.5rem 0;
+  color: var(--text-secondary);
+}
+
+.ribbon-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.ribbon-left {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.date-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.market-pulse {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--color-finance);
+  font-weight: 600;
+}
+
+.pulse-circle {
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-finance);
+  border-radius: 50%;
+}
+
+.ribbon-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.82rem;
+}
+
+.doc-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: var(--transition);
+  font-weight: 500;
+}
+
+.doc-link:hover {
+  color: #2563eb;
+}
+
+/* ==========================================================================
+   今日頭條焦點卡片 (Hero Editorial Highlight)
+   ========================================================================== */
+.hero-section {
+  padding: 2.2rem 0 1.25rem 0;
+}
+
+.hero-card {
+  position: relative;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-card);
+  padding: 2.25rem 2.5rem;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.hero-glow-effect {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(225, 29, 72, 0.08) 0%, rgba(37, 99, 235, 0) 70%);
+  pointer-events: none;
+}
+
+.hero-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1.1rem;
+}
+
+.breaking-badge {
+  background: linear-gradient(135deg, #e11d48, #be123c);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0.28rem 0.75rem;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.25);
+}
+
+.hero-category-label {
+  font-size: 0.82rem;
+  color: var(--color-major);
+  font-weight: 700;
+}
+
+.hero-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  line-height: 1.35;
+  margin-bottom: 0.95rem;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.hero-title:hover {
+  color: #2563eb;
+}
+
+.hero-summary {
+  font-size: 0.98rem;
+  color: var(--text-secondary);
+  line-height: 1.68;
+  margin-bottom: 1.6rem;
+}
+
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+
+.hero-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.hero-right-panel {
+  background-color: #ffffff;
+  border-radius: var(--radius-md);
+  padding: 1.6rem;
+  border: 1px solid var(--border-card);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.hero-takeaways-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  margin-bottom: 0.95rem;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hero-takeaways-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hero-takeaways-list li {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  line-height: 1.5;
+}
+
+.hero-takeaways-list li::before {
+  content: "✦";
+  color: #2563eb;
+  font-size: 0.8rem;
+  margin-top: 0.15rem;
+}
+
+/* ==========================================================================
+   七大分類膠囊導覽列 (Category Navigation Pills - 7 Categories)
+   ========================================================================== */
+.category-nav-section {
+  padding: 1rem 0 1.6rem 0;
+}
+
+.category-nav-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  overflow-x: auto;
+  padding: 0.4rem 0.2rem;
+  scrollbar-width: none;
+}
+
+.category-nav-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.cat-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.6rem 1.15rem;
+  border-radius: var(--radius-full);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.cat-pill:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: rgba(203, 213, 225, 1);
+  transform: translateY(-2px);
+}
+
+.cat-pill.active {
+  background-color: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
+}
+
+.cat-pill-count {
+  font-size: 0.72rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--radius-full);
+  background-color: rgba(15, 23, 42, 0.08);
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.cat-pill.active .cat-pill-count {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   ESG 負面新聞專屬風險雷達看版 (ESG Risk Banner)
+   ========================================================================== */
+.esg-radar-banner {
+  background: linear-gradient(135deg, #fff1f2 0%, #fff7ed 100%);
+  border: 1px solid rgba(254, 205, 211, 0.9);
+  border-radius: var(--radius-md);
+  padding: 1.35rem 1.65rem;
+  margin-bottom: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.radar-left {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+.radar-icon-box {
+  width: 2.85rem;
+  height: 2.85rem;
+  border-radius: var(--radius-md);
+  background: #ffe4e6;
+  color: #e11d48;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  border: 1px solid rgba(225, 29, 72, 0.2);
+}
+
+.radar-info h3 {
+  font-size: 1.08rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--text-primary);
+}
+
+.radar-info p {
+  font-size: 0.84rem;
+  color: var(--text-secondary);
+  margin-top: 0.2rem;
+}
+
+.radar-metrics {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.metric-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  min-width: 95px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.metric-pill .metric-val {
+  font-size: 1.35rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+}
+
+.metric-pill.high .metric-val { color: var(--risk-high); }
+.metric-pill.med .metric-val { color: var(--risk-medium); }
+.metric-pill.env .metric-val { color: var(--color-finance); }
+
+.metric-pill .metric-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   七大分類新聞區塊與網格 (The 7 News Grids)
+   ========================================================================== */
+.category-section {
+  margin-bottom: 3.8rem;
+  scroll-margin-top: 5.5rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.section-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.section-icon {
+  width: 2.15rem;
+  height: 2.15rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  color: var(--text-primary);
+}
+
+.section-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-left: 0.5rem;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .section-desc { display: inline-block; }
+}
+
+.section-count-tag {
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+  font-weight: 600;
+}
+
+/* 新聞卡片網格 (Responsive 3-Column Grid) */
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .news-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 新聞卡片本體 (Refined White Elevation Card) */
+.news-card {
+  position: relative;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: var(--transition);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
+.news-card:hover {
+  background-color: var(--bg-card-hover);
+  border-color: rgba(148, 163, 184, 0.5);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* 頂部分類與出處詮釋列 */
+.card-meta-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+  font-size: 0.8rem;
+}
+
+.card-source-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
+}
+
+.card-time {
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+}
+
+/* ESG 專屬危險性警示標章 */
+.risk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.risk-badge.high {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+}
+
+.risk-badge.medium {
+  background-color: #fef3c7;
+  color: #d97706;
+  border: 1px solid #fcd34d;
+}
+
+.risk-badge.low {
+  background-color: #d1fae5;
+  color: #059669;
+  border: 1px solid #6ee7b7;
+}
+
+/* 標題與摘要 */
+.card-title {
+  font-size: 1.12rem;
+  font-weight: 700;
+  line-height: 1.45;
+  margin-bottom: 0.7rem;
+  color: var(--text-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.2s;
+}
+
+.news-card:hover .card-title {
+  color: #2563eb;
+}
+
+.card-summary {
+  font-size: 0.89rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 卡片底部標籤與動作列 */
+.card-footer {
+  margin-top: auto;
+  padding-top: 0.95rem;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.card-tags {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.tag-chip {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  background-color: var(--bg-tertiary);
+  padding: 0.18rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.card-action-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  padding: 0.4rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.card-action-btn:hover {
+  color: #2563eb;
+  background-color: var(--bg-tertiary);
+}
+
+.card-action-btn.bookmarked {
+  color: #f59e0b;
+}
+
+/* ==========================================================================
+   深度摘要閱讀彈窗 (Article Detail Modal)
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background-color: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  max-width: 700px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 2.4rem;
+  box-shadow: 0 20px 40px -8px rgba(15, 23, 42, 0.16);
+  position: relative;
+  transform: translateY(20px) scale(0.98);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.open .modal-content {
+  transform: translateY(0) scale(1);
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: var(--transition);
+}
+
+.modal-close-btn:hover {
+  color: #dc2626;
+  background-color: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.modal-header {
+  margin-bottom: 1.35rem;
+}
+
+.modal-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
+}
+
+.modal-title {
+  font-size: 1.48rem;
+  font-weight: 800;
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary);
+}
+
+.modal-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+
+.modal-body {
+  font-size: 0.96rem;
+  line-height: 1.72;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.modal-takeaways-box {
+  background-color: #f8fafc;
+  border-left: 4px solid #2563eb;
+  border-radius: var(--radius-sm);
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+  border: 1px solid var(--border-card);
+  border-left-width: 4px;
+}
+
+.modal-takeaways-box h4 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.modal-takeaways-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.modal-takeaways-list li {
+  font-size: 0.9rem;
+  position: relative;
+  padding-left: 1.35rem;
+  color: var(--text-secondary);
+}
+
+.modal-takeaways-list li::before {
+  content: "✔";
+  position: absolute;
+  left: 0;
+  color: #059669;
+  font-weight: 700;
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1.35rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.modal-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.35rem;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: var(--transition);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+.modal-link-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+/* ==========================================================================
+   吐司通知 (Toast Notification)
+   ========================================================================== */
+.toast-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+.toast {
+  background-color: #ffffff;
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1.3rem;
+  box-shadow: var(--shadow-lg);
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  transform: translateY(15px);
+  opacity: 0;
+  transition: var(--transition);
+  pointer-events: auto;
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast.success {
+  border-left: 4px solid #059669;
+}
+
+.toast.info {
+  border-left: 4px solid #2563eb;
+}
+
+/* ==========================================================================
+   頁尾 (Site Footer)
+   ========================================================================== */
+.site-footer {
+  background-color: #ffffff;
+  border-top: 1px solid var(--border-subtle);
+  padding: 3.5rem 0 2.25rem 0;
+  margin-top: 4.5rem;
+  color: var(--text-muted);
+  font-size: 0.86rem;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 2.5rem;
+  margin-bottom: 2.5rem;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.footer-brand h4 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.6rem;
+}
+
+.footer-brand p {
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+.footer-links h5 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.95rem;
+}
+
+.footer-links ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.footer-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: #2563eb;
+}
+
+.footer-bottom {
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- ======================================================================
+       全域頂部導覽列 (Sticky Header)
+       ====================================================================== -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <!-- 品牌標識 -->
+      <a href="#" class="brand-link" onclick="setCategoryFilter('all'); return false;">
+        <div class="brand-icon-wrapper">
+          <i class="fa-solid fa-bolt"></i>
+          <span class="pulse-dot" title="系統即時同步中"></span>
+        </div>
+        <div class="brand-text">
+          <h1>DailyPulse <span class="brand-badge">PRO v2.5</span></h1>
+          <div class="brand-subtitle">七大板塊 · 全方位每日專業新聞脈動</div>
+        </div>
+      </a>
+
+      <!-- 即時全文檢索搜尋列 -->
+      <div class="search-container">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input 
+          type="text" 
+          id="search-input" 
+          class="search-input" 
+          placeholder="搜尋全站新聞標題、來源或標籤 (例如: 諾貝爾、央行、台積電、裁罰)..."
+          autocomplete="off"
+        >
+        <button id="search-clear-btn" class="search-clear-btn" onclick="clearSearch()" title="清除搜尋">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- 右側功能操作區 -->
+      <div class="header-actions">
+        <button id="refresh-btn" class="action-btn" onclick="simulateLiveFetch()" title="重新同步最新新聞">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span>即時更新</span>
+        </button>
+
+        <button class="action-btn btn-primary" onclick="copyDailyDigestMarkdown()" title="一鍵複製今日完整 Markdown 簡報">
+          <i class="fa-solid fa-copy"></i>
+          <span>複製簡報</span>
+        </button>
+
+        <button class="action-btn icon-only" id="theme-toggle-btn" onclick="toggleTheme()" title="切換深色 / 淺色模式">
+          <i id="theme-toggle-icon" class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       副標題資訊列 (Date & Status Ribbon)
+       ====================================================================== -->
+  <aside class="status-ribbon">
+    <div class="container ribbon-inner">
+      <div class="ribbon-left">
+        <div class="date-indicator">
+          <i class="fa-regular fa-calendar-check" style="color: #2563eb;"></i>
+          <span id="header-date-text">2026 年 11 月 06 日</span>
+        </div>
+        <div class="market-pulse">
+          <span class="pulse-circle"></span>
+          <span>市場動態：七大板塊監警正常運行（已彙整 35 則重要情報）</span>
+        </div>
+        <span id="header-update-time" style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">更新時間：載入中...</span>
+      </div>
+
+      <div class="ribbon-right">
+        <a href="AGENTS.md" target="_blank" class="doc-link" title="檢視 AI 開發指引規範">
+          <i class="fa-solid fa-book-bookmark"></i>
+          <span>AGENTS.md 規範手冊</span>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ======================================================================
+       主體內容區 (Main Container)
+       ====================================================================== -->
+  <main class="container">
+    
+    <!-- 1. 今日頭條焦點卡片 (Hero Editorial Highlight) -->
+    <section class="hero-section" id="hero-section-container">
+      <!-- 由 JS 動態渲染 -->
+    </section>
+
+    <!-- 2. 七大分類膠囊導覽條 (Category Navigation Pills) -->
+    <nav class="category-nav-section">
+      <div class="category-nav-bar" id="category-nav-bar">
+        <!-- 由 JS 動態渲染 (重大事件、財金、時事、股市、娛樂、會計、ESG負面新聞) -->
+      </div>
+    </nav>
+
+    <!-- 3. ESG 負面爭議與法規裁罰雷達監測看板 -->
+    <section id="esg-radar-container">
+      <!-- 由 JS 動態渲染 -->
+    </section>
+
+    <!-- 4. 七大分類新聞展示網格 (The 7 News Grids，每類至少 5 則) -->
+    <div id="news-sections-container">
+      <!-- 由 JS 動態渲染 -->
+    </div>
+
+  </main>
+
+  <!-- ======================================================================
+       深度摘要閱讀彈窗 (Article Detail & AI Digest Modal)
+       ====================================================================== -->
+  <div class="modal-overlay" id="article-modal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="closeArticleModal()" aria-label="關閉視窗">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div id="modal-dynamic-content">
+        <!-- 點擊卡片時由 JS 動態填入 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       全域吐司通知容器 (Toast Container)
+       ====================================================================== -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ======================================================================
+       頁尾 (Site Footer)
+       ====================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h4>DailyPulse 每日脈動</h4>
+          <p>專為現代專業工作者打造的跨領域精緻新聞情報儀表板。全站遵循嚴格的 <code>AGENTS.md</code> 資料合約與設計規範，純靜態免安裝編譯，開箱即用完美支援 GitHub Pages 免費發布託管。</p>
+        </div>
+        <div class="footer-links">
+          <h5>七大板塊快捷導覽</h5>
+          <ul>
+            <li><a href="#section-major_events" onclick="setCategoryFilter('major_events')">🚨 重大事件 (Major Events)</a></li>
+            <li><a href="#section-finance" onclick="setCategoryFilter('finance')">📊 財金焦點 (Finance)</a></li>
+            <li><a href="#section-current_events" onclick="setCategoryFilter('current_events')">📰 時事要聞 (Current Events)</a></li>
+            <li><a href="#section-stock_market" onclick="setCategoryFilter('stock_market')">📈 股市觀測 (Stock Market)</a></li>
+            <li><a href="#section-entertainment" onclick="setCategoryFilter('entertainment')">🎭 娛樂生活 (Entertainment)</a></li>
+            <li><a href="#section-accounting" onclick="setCategoryFilter('accounting')">📑 會計與審計 (Accounting)</a></li>
+            <li><a href="#section-esg_risk" onclick="setCategoryFilter('esg_risk')">⚠️ ESG 負面新聞 (ESG Risk)</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h5>開發與規範文件</h5>
+          <ul>
+            <li><a href="AGENTS.md"><i class="fa-solid fa-file-lines"></i> AGENTS.md (專案最高憲法)</a></li>
+            <li><a href="CLAUDE.md"><i class="fa-solid fa-file-code"></i> CLAUDE.md (Claude 指引)</a></li>
+            <li><a href="README.md"><i class="fa-solid fa-circle-info"></i> README.md (部署與上傳手冊)</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div>© 2026 DailyPulse Dashboard · 依據 AGENTS.md 開發規範架構設計</div>
+        <div>
+          <span style="color: #059669;">●</span> 支援 GitHub Pages 靜態即時發布
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 內嵌核心控制邏輯腳本 (確保免本機路徑依賴，隨點隨開) -->
+  <script>
+/**
+ * DailyPulse - 現代典雅淺色新聞儀表板核心腳本 (Light Editorial Aesthetic)
+ * 符合 AGENTS.md 規範：嚴格遵守 JSON Schema 資料合約，七大分類板塊（每類 5+ 則新聞），純前端零依賴
+ */
+
+// ============================================================================
+// 1. 每日新聞資料集 (七大分類，每分類至少 5 則，共 35 則新聞)
+// ============================================================================
+const DAILY_NEWS_DATA = {
+  lastUpdated: "2026-11-06 11:30",
+  dateText: "2026 年 11 月 06 日",
+  heroBreakingId: "major-001",
+  categories: [
+    {
+      id: "major_events",
+      name: "重大事件",
+      icon: "fa-bullhorn",
+      color: "#e11d48",
+      badgeClass: "badge-major",
+      description: "跨領域重大焦點、全球震撼事件、重大法規與突破性里程碑（不分類型）"
+    },
+    {
+      id: "finance",
+      name: "財金焦點",
+      icon: "fa-chart-line",
+      color: "#059669",
+      badgeClass: "badge-finance",
+      description: "全球央行利率決策、通膨指標、外匯走勢與總體經濟分析"
+    },
+    {
+      id: "current_events",
+      name: "時事要聞",
+      icon: "fa-newspaper",
+      color: "#2563eb",
+      badgeClass: "badge-current",
+      description: "國內外重大公共政策、經貿高峰會與民生法規新制"
+    },
+    {
+      id: "stock_market",
+      name: "股市觀測",
+      icon: "fa-arrow-trend-up",
+      color: "#7c3aed",
+      badgeClass: "badge-stock",
+      description: "台股加權指數、美股科技巨頭、先進封裝半導體與法說動態"
+    },
+    {
+      id: "entertainment",
+      name: "娛樂生活",
+      icon: "fa-masks-theater",
+      color: "#ea580c",
+      badgeClass: "badge-entertainment",
+      description: "金馬影展入圍焦點、大巨蛋巡演盛事、影劇串流產業動態"
+    },
+    {
+      id: "accounting",
+      name: "會計與審計",
+      icon: "fa-file-invoice-dollar",
+      color: "#0891b2",
+      badgeClass: "badge-accounting",
+      description: "新版審計公報、IFRS永續確信、CFC反避稅與查核實務"
+    },
+    {
+      id: "esg_risk",
+      name: "ESG 負面新聞",
+      icon: "fa-triangle-exclamation",
+      color: "#dc2626",
+      badgeClass: "badge-esg",
+      description: "企業環保違規裁罰、重大工安職災停工、內線交易與治理爭議監警"
+    }
+  ],
+  news: [
+    // =========================================================================
+    // 1. 重大事件 (Major Events - 跨領域重大焦點，共 5 則)
+    // =========================================================================
+    {
+      id: "major-001",
+      categoryId: "major_events",
+      title: "聯合國通過全球前瞻人工智慧治理安全條約 70國代表共同簽署歷史性框架",
+      summary: "為防止超智慧AI科技脫序並保護全球民生關鍵基礎系統，聯合國大會歷經數月馬拉松式閉門談判，正式通過首部具備法律拘束力的人工智慧安全條約，七十國代表於日內瓦聯合簽署。",
+      source: "路透社 / 國際快訊",
+      sourceUrl: "https://www.reuters.com/",
+      publishedAt: "25 分鐘前",
+      readTime: "4 分鐘",
+      tags: ["全球重大焦點", "AI安全公約", "聯合國", "國際監管"],
+      isBreaking: true,
+      takeaways: [
+        "明定前瞻萬億參數模型之運算力通報標準與致命自主武器完全禁用原則",
+        "成立跨國演算法紅隊稽核中心，賦予重大風險情境下的全球緊急熔斷機制",
+        "國際經貿組織預計將AI合規性正式納入跨國貿易自由協定之審查前提"
+      ]
+    },
+    {
+      id: "major-002",
+      categoryId: "major_events",
+      title: "台灣與歐美十國簽署次世代海底電纜與跨國數位韌性聯防協議",
+      summary: "面對日益複雜之地緣政治與海纜中斷威脅，國家通訊傳播委員會及數發部宣布與歐美主要民主盟友簽署海底通訊骨幹韌性聯防協議，啟動衛星低軌備援與公海巡弋保護機制。",
+      source: "中央社",
+      sourceUrl: "https://www.cna.com.tw/",
+      publishedAt: "1 小時前",
+      readTime: "3 分鐘",
+      tags: ["海纜安全", "數位韌性", "國際合作", "跨領域重大"],
+      isBreaking: false,
+      takeaways: [
+        "建立跨國24小時即時海纜故障熱切換與微波微型基站應急協定",
+        "多國海防聯合巡弋重要通訊水道，提升蓄意破壞行為之嚇阻刑責",
+        "預計於三年內於花東及南部再增設三座高規格國際海纜登陸站"
+      ]
+    },
+    {
+      id: "major-003",
+      categoryId: "major_events",
+      title: "諾貝爾委員會揭曉最新醫學重大成果 活體基因修復療法獲跨世紀突破",
+      summary: "卡羅琳斯卡學院諾貝爾大會公布本年度生醫獎項，由開發活體奈米分子精準基因嵌合技術之研究團隊榮膺，該技術成功在多項遺傳性神經病變人體臨床實驗中達成完全逆轉。",
+      source: "泛科學 / 國際科學通訊",
+      sourceUrl: "https://pansci.asia/",
+      publishedAt: "3 小時前",
+      readTime: "3 分鐘",
+      tags: ["諾貝爾獎", "生醫突破", "基因治療", "國際重大"],
+      isBreaking: false,
+      takeaways: [
+        "突破傳統病毒載體免疫排斥瓶頸，實現全身性特定組織細胞定點修復",
+        "多國藥監機構已開啟綠色快速通道審查，預計兩年內惠及首批罕見疾病病患",
+        "全球生技產業研發重心迅速向奈米遞送與精準基因合成板塊傾斜"
+      ]
+    },
+    {
+      id: "major-004",
+      categoryId: "major_events",
+      title: "全球氣候峰會拍板設立千億美元損失與損害基金 啟動跨洲超高壓綠電網",
+      summary: "第31屆聯合國氣候變化大會（COP）各締約國代表在最後關頭達成歷史性協議，正式注資啟動首期達千億美元之極端氣候受害補償基金，並通過橫跨地中海與印太之超高壓電網互聯計畫。",
+      source: "公視新聞網",
+      sourceUrl: "https://news.pts.org.tw/",
+      publishedAt: "5 小時前",
+      readTime: "4 分鐘",
+      tags: ["全球氣候峰會", "綠能電網", "碳中和", "環境政策"],
+      isBreaking: false,
+      takeaways: [
+        "已開發工業大國承諾每年依碳排歷史份額注資氣候損害基金",
+        "跨國超高壓直流電網（UHVDC）將實現日間太陽能與夜間風電之全球調配",
+        "全球跨國金融機構將加速淘汰未設置碳捕集技術之傳統化石發電融資"
+      ]
+    },
+    {
+      id: "major-005",
+      categoryId: "major_events",
+      title: "國際民航組織發布全新超音速低碳航空安全法規 首款商用客機預計後年首飛",
+      summary: "國際民航組織（ICAO）於蒙特婁總部正式頒布新一代低音爆、低排放超音速民航機適航標準，消除多年來陸地上空超音速巡航禁令，跨太平洋航程時間將有望大幅縮短一半以上。",
+      source: "經濟日報",
+      sourceUrl: "https://money.udn.com/",
+      publishedAt: "7 小時前",
+      readTime: "3 分鐘",
+      tags: ["航空科技", "超音速客機", "ICAO法規", "跨國交通"],
+      isBreaking: false,
+      takeaways: [
+        "全新空氣動力外型將音爆能量削減至傳統協和號客機之五分之一以下",
+        "強制要求採用100%永續航空燃料（SAF）以維持國際減碳標準",
+        "全球三大航空巨頭已累計簽署超過兩百架新客機意向訂單"
+      ]
+    },
+
+    // =========================================================================
+    // 2. 財金焦點 (Finance - 總經、央行、通膨與經貿，共 5 則)
+    // =========================================================================
+    {
+      id: "fin-001",
+      categoryId: "finance",
+      title: "美聯準會最新利率決議按兵不動 點陣圖釋出審慎寬鬆訊號",
+      summary: "全球主要央行政策轉向觀望，美國最新通膨數據維持在預期區間，聯準會主席強調將依據經濟數據動態調整降息節奏，美元指數短線維持高檔震盪整理。",
+      source: "經濟日報",
+      sourceUrl: "https://money.udn.com/",
+      publishedAt: "1 小時前",
+      readTime: "3 分鐘",
+      tags: ["總經動向", "利率決策", "美聯準會", "美元指數"],
+      isBreaking: false,
+      takeaways: [
+        "聯邦基準利率維持在現行區間，官員對通膨降回 2% 目標保持審慎信心",
+        "下半年政策焦點聚焦勞動市場就業數據與新興市場資本流向",
+        "台幣與新興亞洲貨幣匯率波動率預期將維持收斂格局"
+      ]
+    },
+    {
+      id: "fin-002",
+      categoryId: "finance",
+      title: "國發會景氣燈號連月維持黃紅燈 科技出口動能持續擴張",
+      summary: "受惠於高效能運算、雲端伺服器與AI晶片拉貨潮，台灣9月外銷訂單創下同期新高，內需餐飲與零售消費維持穩定增長，全年GDP成長預測樂觀看待。",
+      source: "工商時報",
+      sourceUrl: "https://ctee.com.tw/",
+      publishedAt: "3 小時前",
+      readTime: "2 分鐘",
+      tags: ["景氣燈號", "GDP成長", "外銷訂單", "科技出口"],
+      isBreaking: false,
+      takeaways: [
+        "景氣綜合判斷分數上升，製造業存貨去化告一段落",
+        "高效能運算訂單暢旺抵銷傳統產業復甦緩慢之衝擊",
+        "民間投資與綠能設施建設進度符合中長期藍圖"
+      ]
+    },
+    {
+      id: "fin-003",
+      categoryId: "finance",
+      title: "央行公布外匯存底最新統計 投資收益抵銷匯率波動連續攀升",
+      summary: "中央銀行發布最新我國外匯存底統計，在外匯存底投資運用收益挹注下規模續創新猷，央行強調維持匯市秩序決心不變，外匯存底流動性充足。",
+      source: "中央社",
+      sourceUrl: "https://www.cna.com.tw/",
+      publishedAt: "5 小時前",
+      readTime: "2 分鐘",
+      tags: ["外匯存底", "央行", "外匯市場"],
+      isBreaking: false,
+      takeaways: [
+        "外幣資產海外投資運用收益維持正向報酬貢獻",
+        "主要貨幣對美元匯率變動對外幣折算帶來適度抵銷效應",
+        "台灣金融體系具備抵禦外部資金衝擊之雄厚緩衝本錢"
+      ]
+    },
+    {
+      id: "fin-004",
+      categoryId: "finance",
+      title: "財政部公布出口統計強勁連紅 AI伺服器與半導體供應鏈居功厥偉",
+      summary: "財政部統計處公布最新海關進出口貿易初步統計，受惠於全球AI資料中心擴產帶動高階顯卡與先進製程晶片需求，單月出口金額創歷年同月新高紀錄。",
+      source: "財政部統計處",
+      sourceUrl: "https://www.mof.gov.tw/",
+      publishedAt: "6 小時前",
+      readTime: "3 分鐘",
+      tags: ["出口數據", "貿易總值", "半導體", "財政部"],
+      isBreaking: false,
+      takeaways: [
+        "電子零組件與資通訊產品出口比重佔比逾六成五",
+        "歐美與東協市場採購動能顯著優於其他傳統製造業區域",
+        "預估第四季出口成長率可望維持雙位數擴張態勢"
+      ]
+    },
+    {
+      id: "fin-005",
+      categoryId: "finance",
+      title: "國際貨幣基金組織（IMF）上調全球經濟成長預估 示警地緣通膨風險",
+      summary: "IMF於秋季世界經濟展望報告中微幅上修全球經濟成長率，肯定美國經濟韌性與新興亞洲成長動能，但警示若中東與能源供應鏈受阻，通膨黏著性恐延後全球央行降息時程。",
+      source: "彭博社 / 鉅亨網",
+      sourceUrl: "https://news.cnyes.com/",
+      publishedAt: "8 小時前",
+      readTime: "3 分鐘",
+      tags: ["IMF報告", "全球總經", "通膨預測", "國際匯市"],
+      isBreaking: false,
+      takeaways: [
+        "已開發國家軟著陸機率升高，消費者支出意願維持穩定",
+        "供應鏈區域化重組提高跨國企業製造成本與物流資本支出",
+        "各國財政赤字佔GDP比重攀升成為中長期金融穩定潛在隱憂"
+      ]
+    },
+
+    // =========================================================================
+    // 3. 時事要聞 (Current Events - 重大政策、法規與民生，共 5 則)
+    // =========================================================================
+    {
+      id: "cur-001",
+      categoryId: "current_events",
+      title: "立法院三讀通過關鍵基礎設施防護法修正案 大幅提高資安破壞刑責",
+      summary: "立法院院會今日三讀通過修正草案，針對電力、水資源、通訊及醫療等核心關鍵基礎設施實體或網路攻擊行為，最高將處十年以上有期徒刑並併科億元罰金。",
+      source: "公視新聞網",
+      sourceUrl: "https://news.pts.org.tw/",
+      publishedAt: "2 小時前",
+      readTime: "3 分鐘",
+      tags: ["立法院", "資安防護", "關鍵基礎設施", "法規修訂"],
+      isBreaking: false,
+      takeaways: [
+        "全面納管公私立高科技關鍵設施與數位通訊骨幹",
+        "建立跨部會 24 小時資安通報與勒索軟體聯防處置架構",
+        "落實各機構核心系統異地備援與演練評核機制"
+      ]
+    },
+    {
+      id: "cur-002",
+      categoryId: "current_events",
+      title: "亞太經貿領袖高峰會登場 聚焦印太綠能供應鏈與數位主權架構",
+      summary: "亞太區域多國代表團齊聚探討新世代數位貿易規範與潔淨能源合作協議，台灣代表團積極分享智慧製造與韌性電網佈局成果，獲與會成員高度關注。",
+      source: "聯合新聞網",
+      sourceUrl: "https://udn.com/",
+      publishedAt: "4 小時前",
+      readTime: "3 分鐘",
+      tags: ["經貿峰會", "綠能轉型", "印太戰略", "數位治理"],
+      isBreaking: false,
+      takeaways: [
+        "推動跨國碳足跡互認機制與碳邊境調整防護",
+        "加速智慧電網與儲能系統之跨國技術轉移與標準整合",
+        "強化各國青年數位技能與AI科技人才流通計畫"
+      ]
+    },
+    {
+      id: "cur-003",
+      categoryId: "current_events",
+      title: "行政院拍板新世代區域電網與分散式儲能十年投資藍圖 強化抗災防護",
+      summary: "行政院會核定通過新世代電網強韌強化方案，預計在全國六大都會生活圈與工業園區加速增設微電網系統與大型分散式儲能設施，以提升極端天候下的電力備援能力。",
+      source: "中央廣播電臺",
+      sourceUrl: "https://www.rti.org.tw/",
+      publishedAt: "6 小時前",
+      readTime: "3 分鐘",
+      tags: ["智慧電網", "儲能設施", "行政院", "能源安全"],
+      isBreaking: false,
+      takeaways: [
+        "推動園區獨立自給自足電網系統，大幅縮短突發事故復電時間",
+        "鼓勵民間工廠屋頂太陽能與微型儲能系統併聯回售電力",
+        "全面淘汰老舊變電所設備並進行地下化防洪升級"
+      ]
+    },
+    {
+      id: "cur-004",
+      categoryId: "current_events",
+      title: "交通部推動全國主要都會區公共運輸定期票常態化 減碳效益顯著攀升",
+      summary: "交通部統計通勤月票推行成果，全國大眾運輸搭乘人次突破數億人次，顯著減少主要都會區上下班交通雍塞與碳排放量，交通部宣布將納入長期公共預算推動常態化支援。",
+      source: "自由時報",
+      sourceUrl: "https://news.ltn.com.tw/",
+      publishedAt: "7 小時前",
+      readTime: "2 分鐘",
+      tags: ["公共運輸", "通勤月票", "節能減碳", "都會交通"],
+      isBreaking: false,
+      takeaways: [
+        "主要都會區尖峰時段自用汽機車流量減少逾12%",
+        "擴大整合公共自行車（YouBike）與微型電動運具轉乘優惠",
+        "交通部正規劃將跨縣市中長途台鐵觀光路線納入定期回饋"
+      ]
+    },
+    {
+      id: "cur-005",
+      categoryId: "current_events",
+      title: "衛福部全面擴大遠距醫療照護與AI輔助診斷健保常態給付",
+      summary: "為落實醫療資源平權，衛生福利部宣布將山地離島與偏鄉遠距診療正式納入健保常態給付範疇，並同步引入獲TFDA認證之AI影像輔助診斷模型，協助基層診所及早判讀重症風險。",
+      source: "健康醫療網",
+      sourceUrl: "https://www.healthnews.com.tw/",
+      publishedAt: "9 小時前",
+      readTime: "3 分鐘",
+      tags: ["遠距醫療", "智慧醫療", "健保改革", "衛福部"],
+      isBreaking: false,
+      takeaways: [
+        "偏鄉衛生所與醫學中心建立綠色雙向轉診即時視訊平台",
+        "AI輔助視網膜病變及胸腔X光篩檢準確率提升至95%以上",
+        "大幅降低高齡長者定期下山就醫奔波之時間與經濟負擔"
+      ]
+    },
+
+    // =========================================================================
+    // 4. 股市觀測 (Stock Market - 台美股、半導體與盤勢，共 5 則)
+    // =========================================================================
+    {
+      id: "stk-001",
+      categoryId: "stock_market",
+      title: "台股在半導體雙雄拉抬下開高震盪 先進封裝設備股買盤熱絡",
+      summary: "台股早盤隨美股科技股強勢開高，權值王晶圓代工與聯發科領軍突圍，盤面焦點集中在 CoWoS 先進封裝供應鏈、散熱模組與高頻高速CCL族群，外資買超擴大。",
+      source: "鉅亨網",
+      sourceUrl: "https://www.cnyes.com/",
+      publishedAt: "1 小時前",
+      readTime: "3 分鐘",
+      tags: ["台股加權", "台積電", "CoWoS封裝", "散熱族群"],
+      isBreaking: false,
+      takeaways: [
+        "加權指數站穩所有短中長期均線，成交量能顯著增溫",
+        "先進製程與高頻寬記憶體（HBM）拉貨訂單能見度延伸至明年底",
+        "中小型業績成長股輪動健康，融資維持穩定未見失控"
+      ]
+    },
+    {
+      id: "stk-002",
+      categoryId: "stock_market",
+      title: "美股四大指數集體收紅 輝達與微軟市值爭奪推升費城半導體指數大漲",
+      summary: "美股受惠於雲端四大巨頭加大資本支出投入AI資料中心建置，輝達大漲3.4%，帶動費城半導體指數強勁反彈超過2.1%，市場對即將召開之法說會抱持高度期待。",
+      source: "Yahoo 奇摩股市",
+      sourceUrl: "https://tw.stock.yahoo.com/",
+      publishedAt: "4 小時前",
+      readTime: "2 分鐘",
+      tags: ["美股費半", "輝達NVIDIA", "AI伺服器", "資本支出"],
+      isBreaking: false,
+      takeaways: [
+        "雲端巨頭財報顯示AI投資變現率逐步顯現，企業端訂閱動能強勁",
+        "伺服器供應鏈零組件短缺問題改善，出貨節奏進入高峰",
+        "技術面形成多頭排列，突破歷史高點壓力區"
+      ]
+    },
+    {
+      id: "stk-003",
+      categoryId: "stock_market",
+      title: "晶圓代工龍頭法說會展望亮眼 資本支出維持高檔加速海外布局",
+      summary: "全球晶圓代工龍頭召開線上法說會，經營團隊上調全年美元營收預期，確認 2 奈米先進製程客戶投片量超乎預期，美歐日海外晶圓廠進度均符合時程藍圖。",
+      source: "經濟日報",
+      sourceUrl: "https://money.udn.com/",
+      publishedAt: "6 小時前",
+      readTime: "4 分鐘",
+      tags: ["台積電", "法說會", "2奈米", "海外晶圓廠"],
+      isBreaking: false,
+      takeaways: [
+        "高階智慧型手機與AI晶片客戶全數包下首波先進製程產能",
+        "資本支出區間維持在300至320億美元之間，展現高度成長信心",
+        "電力供應與海外建廠成本控制維持在毛利率可控範圍"
+      ]
+    },
+    {
+      id: "stk-004",
+      categoryId: "stock_market",
+      title: "AI伺服器散熱全面升級水冷系統 關鍵液冷快接頭與分歧管供應鏈迎爆發期",
+      summary: "隨新一代高功耗AI GPU晶片正式出貨，傳統氣冷散熱已無法滿足散熱TDP要求，台灣散熱模組大廠全面受惠水冷板（Cold Plate）與浸沒式冷卻訂單激增，產能供不應求。",
+      source: "電子時報 (DigiTimes)",
+      sourceUrl: "https://www.digitimes.com.tw/",
+      publishedAt: "7 小時前",
+      readTime: "3 分鐘",
+      tags: ["水冷散熱", "AI硬體", "伺服器", "散熱族群"],
+      isBreaking: false,
+      takeaways: [
+        "單一伺服器機櫃水冷散熱模組產值較傳統氣冷高出數倍",
+        "供應鏈具備高精密加工與防漏液專利門檻，形成強大護城河",
+        "預估明年全球資料中心水冷滲透率將自現行一成激增至三成以上"
+      ]
+    },
+    {
+      id: "stk-005",
+      categoryId: "stock_market",
+      title: "台灣證交所加速推動創新板鬆綁法規 預計第四季迎科技新創上市潮",
+      summary: "證券交易所為扶植生技新藥、綠能環保與生成式AI等具關鍵核心技術之獨角獸企業，持續鬆綁創新板掛牌門檻與一般投資人交易資格，吸引國際創投基金進駐。",
+      source: "工商時報",
+      sourceUrl: "https://ctee.com.tw/",
+      publishedAt: "8 小時前",
+      readTime: "3 分鐘",
+      tags: ["證交所", "創新板", "新創獨角獸", "資本市場"],
+      isBreaking: false,
+      takeaways: [
+        "放寬一般自然人資產證明門檻，大幅活絡盤面交易流動性",
+        "已有多家半導體軟體與資安新創公司遞件申請主板或創新板掛牌",
+        "推動上市審查流程透明化與數位化，縮短企業募資籌備週期"
+      ]
+    },
+
+    // =========================================================================
+    // 5. 娛樂生活 (Entertainment - 流行文化、金馬獎與文創，共 5 則)
+    // =========================================================================
+    {
+      id: "ent-001",
+      categoryId: "entertainment",
+      title: "金馬影展公布入圍名單 台灣本土原創作品與跨國合製片百花齊放",
+      summary: "第63屆金馬獎今日揭曉入圍完整名單，多部深入探討台灣多元歷史記憶、社會議題與新住民家庭之長片獲得多項大獎提名，評審團主席盛讚本屆創作能量驚人。",
+      source: "ETtoday 星光雲",
+      sourceUrl: "https://star.ettoday.net/",
+      publishedAt: "3 小時前",
+      readTime: "3 分鐘",
+      tags: ["金馬獎", "台灣國片", "影展入圍", "文化創意"],
+      isBreaking: false,
+      takeaways: [
+        "入圍作品在劇本完整度與美術攝影技術規格創近年新猷",
+        "跨國合拍片比例提高，展現台灣影視產業與國際資金接軌能量",
+        "頒獎典禮預計本月下旬在台北國父紀念館盛大舉辦"
+      ]
+    },
+    {
+      id: "ent-002",
+      categoryId: "entertainment",
+      title: "台北大巨蛋演唱會經濟全面引爆 售票系統啟動AI實名制杜絕黃牛",
+      summary: "多組國際天團相繼宣布台北大巨蛋巡迴演出場次，帶動周邊商圈旅宿與交通產值大幅翻倍，主辦單位全面升級AI面部辨識與實名認證系統維護消費者購票權益。",
+      source: "LINE TODAY 娛樂",
+      sourceUrl: "https://today.line.me/",
+      publishedAt: "5 小時前",
+      readTime: "2 分鐘",
+      tags: ["大巨蛋", "演唱會經濟", "實名制", "文創展演"],
+      isBreaking: false,
+      takeaways: [
+        "大巨蛋疏散動線與聲學調音改善方案獲國際專業巡演團隊驗證通過",
+        "市府成立跨局處指揮中心，加密捷運與接駁公車班次因應人潮",
+        "文創展演經濟效應推估帶動信義區周邊消費超過數億元"
+      ]
+    },
+    {
+      id: "ent-003",
+      categoryId: "entertainment",
+      title: "台灣原創犯罪懸疑影集登上國際串流冠軍 影評讚譽敘事節奏與演技張力",
+      summary: "本土影視團隊打造之高規格懸疑犯罪旗艦影集於全球串流平台同步上線，首週末即空降台灣、香港、新加坡及日本多國非英語節目收視排行榜首，創下台劇海外發行新紀錄。",
+      source: "自由娛樂",
+      sourceUrl: "https://ent.ltn.com.tw/",
+      publishedAt: "6 小時前",
+      readTime: "3 分鐘",
+      tags: ["串流影集", "台劇出海", "原創影視", "文創IP"],
+      isBreaking: false,
+      takeaways: [
+        "電影規格 4K HDR 拍攝與沉浸式杜比全景聲後製樹立新標竿",
+        "演員陣容實力堅強，精湛詮釋人性幽微處獲海外影評一致好評",
+        "製作方已與國際買家簽署第二季開拍與電影版衍生IP開發意向"
+      ]
+    },
+    {
+      id: "ent-004",
+      categoryId: "entertainment",
+      title: "高雄流行音樂中心引進國際沉浸式聲光藝術大展 打造南部文創新地標",
+      summary: "高流攜手英法前瞻數位藝術團隊，共同推出結合多聲道光影互動與實驗電子音樂之沉浸式主題特展，週末湧入數萬觀展人潮，成功帶動鹽埕及愛河灣周邊觀光熱潮。",
+      source: "聯合報 藝文",
+      sourceUrl: "https://udn.com/",
+      publishedAt: "8 小時前",
+      readTime: "2 分鐘",
+      tags: ["數位藝術", "高雄流行音樂中心", "文化觀光", "光影藝術"],
+      isBreaking: false,
+      takeaways: [
+        "全區運用感應光雕投影與互動聲場技術，呈現虛實交錯之感官震撼",
+        "展覽特別設置青年在地音樂創作者專題展間，提供原創作品發表平台",
+        "高市府文化局推廣藝文走讀輕旅行，延長輕軌夜間營運班次服務遊客"
+      ]
+    },
+    {
+      id: "ent-005",
+      categoryId: "entertainment",
+      title: "文化部擴大推動青年文化禮金常態化 獨立書店與表演藝術票房雙雙報捷",
+      summary: "文化部公布成年禮金發放後續效益評估，統計顯示青年族群將超過四成點數用於購買獨立出版實體書籍與觀賞本土舞台劇、現代舞演出，為表演藝術生態圈注入實質活水。",
+      source: "中央社",
+      sourceUrl: "https://www.cna.com.tw/",
+      publishedAt: "10 小時前",
+      readTime: "3 分鐘",
+      tags: ["文化幣", "表演藝術", "獨立書店", "文化部政策"],
+      isBreaking: false,
+      takeaways: [
+        "鼓勵年輕世代走進實體藝文場館，中小型藝文團體售票率回升逾三成",
+        "獨立書店舉辦多元講座與作家讀書會，深化青年人文思辨素養",
+        "文化部研議未來與大專院校結合，推出跨校藝文通識選修抵扣優惠"
+      ]
+    },
+
+    // =========================================================================
+    // 6. 會計與審計 (Accounting - 審計公報、IFRS與稅務查核，共 5 則)
+    // =========================================================================
+    {
+      id: "acc-001",
+      categoryId: "accounting",
+      title: "會基會發布新版審計準則公報 全面強化重大舞弊與數位查核軌跡",
+      summary: "會計研究發展基金會宣布發布最新審計準則公報，規範執業會計師在執行財務報表查核時，應導入數位化稽核工具，並嚴格檢視企業內部控制舞弊風險因應程序。",
+      source: "會計研究月刊",
+      sourceUrl: "https://www.ardf.org.tw/",
+      publishedAt: "2 小時前",
+      readTime: "4 分鐘",
+      tags: ["會計公報", "審計準則", "舞弊防範", "會基會"],
+      isBreaking: false,
+      takeaways: [
+        "明定審計工作底稿須記載針對高風險交易之數位資料分析過程",
+        "強化對管理階層逾越內控之獨立查證與函證程序完整性要求",
+        "協助上市櫃公司提升財報透明度以降低重大不實表達風險"
+      ]
+    },
+    {
+      id: "acc-002",
+      categoryId: "accounting",
+      title: "四大會計師事務所全力備戰 IFRS S1 與 S2 雙重永續確信接軌工作",
+      summary: "金管會要求上市櫃公司依資本額規模逐步編製永續報告書並取得獨立確信報告，PwC、勤業眾信、安侯建業與安永積極整合跨領域永續工程與會計查核專業人才團隊。",
+      source: "會計師公會全國聯合會",
+      sourceUrl: "https://www.roccpa.org.tw/",
+      publishedAt: "4 小時前",
+      readTime: "3 分鐘",
+      tags: ["IFRS S1S2", "永續確信", "四大事務所", "財報合規"],
+      isBreaking: false,
+      takeaways: [
+        "企業溫室氣體範疇一、二、三盤查數據將面臨嚴格查核考驗",
+        "永續風險與傳統財務報表重大性衡量基準將逐步接軌融為一體",
+        "未達確信標準之上市櫃公司可能面臨主管機關退件與罰責"
+      ]
+    },
+    {
+      id: "acc-003",
+      categoryId: "accounting",
+      title: "財政部發布最新跨國企業受控外國公司（CFC）申報查核常見疏失清單",
+      summary: "賦稅署提醒納稅義務人申報海外實質營運子公司或控股公司所得時，應留意盈餘分配計算基準日與穿透課稅認列原則，國稅局將透過全球反避稅大數據庫進行勾稽。",
+      source: "財政部賦稅署",
+      sourceUrl: "https://www.dot.gov.tw/",
+      publishedAt: "6 小時前",
+      readTime: "3 分鐘",
+      tags: ["CFC制度", "反避稅條款", "國稅局查核", "移轉訂價"],
+      isBreaking: false,
+      takeaways: [
+        "常見錯誤包含低稅負國家名單誤判與豁免實質營運門檻計算不實",
+        "逾期未如實申報除補徵本稅外將處一倍至兩倍以下漏稅罰鍰",
+        "建議跨國家族企業儘速委託會計師檢視海外家族信託與架構"
+      ]
+    },
+    {
+      id: "acc-004",
+      categoryId: "accounting",
+      title: "金管會強化審計委員會獨立性與內部控制查核 嚴懲虛偽不實財報行為",
+      summary: "金融監督管理委員會修正證券交易法相關子法，嚴格規定公開發行公司獨立董事在審計委員會之實質審查權限，要求會計師定期與獨董單獨舉行閉門溝通會議。",
+      source: "金管會證期局",
+      sourceUrl: "https://www.sfb.gov.tw/",
+      publishedAt: "8 小時前",
+      readTime: "3 分鐘",
+      tags: ["審計委員會", "公司治理", "金管會", "財報監理"],
+      isBreaking: false,
+      takeaways: [
+        "獨立董事若未善盡查核責任，將依法負擔民事連帶賠償責任",
+        "規定關係人交易超過一定門檻必須經由外部獨立專家出具合理性意見書",
+        "加強對更換簽證會計師事務所之異常案件實施專案調卷抽查"
+      ]
+    },
+    {
+      id: "acc-005",
+      categoryId: "accounting",
+      title: "生成式AI工具導入會計審計作業之專業指引出爐 明定機密資料防護底線",
+      summary: "會計師全聯會正式頒布執業規範指引，允許會計師在編製工作底稿與分析財報變動比率時運用AI模型，但明令嚴禁將未經去識別化之客戶商業機密輸入公共公共雲端模型。",
+      source: "會計研究月刊",
+      sourceUrl: "https://www.ardf.org.tw/",
+      publishedAt: "10 小時前",
+      readTime: "3 分鐘",
+      tags: ["AI審計", "資安合規", "會計師指引", "數位轉型"],
+      isBreaking: false,
+      takeaways: [
+        "事務所須建立內部封閉式微調私有雲審計大語言模型",
+        "AI分析結果仍須由具名會計師簽署並負擔實質專業判斷責任",
+        "強化對客戶供應商憑證真偽之多重圖像辨識與防偽查核"
+      ]
+    },
+
+    // =========================================================================
+    // 7. ESG 負面新聞 (ESG Risk - 環保開罰、工安職災、內線交易，共 5 則)
+    // =========================================================================
+    {
+      id: "esg-001",
+      categoryId: "esg_risk",
+      title: "某上市化工大廠未依許可貯存有害廢棄物 地方環保局重罰百萬勒令產線停工",
+      summary: "環保局稽查大隊深夜突擊抽查某科技園區周邊化工廠，查獲未申報將含重金屬酸鹼廢液經由未登記暗管繞流直排，依水污染防治法處以法定最高額罰鍰並勒令涉案產線即刻停工改善。",
+      source: "環境資訊中心",
+      sourceUrl: "https://e-info.org.tw/",
+      publishedAt: "2 小時前",
+      readTime: "4 分鐘",
+      tags: ["環保裁罰", "水污法", "勒令停工", "有毒廢棄物"],
+      riskLevel: "high",
+      riskDimension: "Environmental",
+      isBreaking: false,
+      takeaways: [
+        "主管機關依水污法處以最高罰鍰新台幣兩千萬元並移送檢方偵辦",
+        "停工產線佔該公司母體營收約 15%，預計衝擊次月供應鏈交期",
+        "環團要求主管機關全面追繳該廠近年不法利得並重新審查排污許可"
+      ]
+    },
+    {
+      id: "esg-002",
+      categoryId: "esg_risk",
+      title: "科技園區新建廠房工地驚傳高空鋼構吊掛事故 勞檢處開罰並勒令全面停工調查",
+      summary: "某半導體新建廠區外包工程今日上午發生吊臂鋼索斷裂墜落事故造成兩名工人重傷，勞動部職安署初步調查認定未落實進場點檢與吊掛防護管制，依職業安全衛生法嚴厲開罰並下令全面停工。",
+      source: "勞動部職安署",
+      sourceUrl: "https://www.osha.gov.tw/",
+      publishedAt: "4 小時前",
+      readTime: "3 分鐘",
+      tags: ["重大工安", "勞檢停工", "職安法開罰", "承攬管理缺失"],
+      riskLevel: "high",
+      riskDimension: "Social",
+      isBreaking: false,
+      takeaways: [
+        "勞檢單位依法勒令全工區停工，須提報完整防墜改進計畫方得復工",
+        "業主與一級營造廠承攬安全管理未善盡監督輔導之責",
+        "建案進度恐延宕至少二至三個月，面臨下游供應商求償壓力"
+      ]
+    },
+    {
+      id: "esg-003",
+      categoryId: "esg_risk",
+      title: "某上櫃生技公司前高層涉嫌內線交易與不合營業常規 檢調兵分多路發動搜索",
+      summary: "檢調機關接獲金融監督管理委員會移送情資，指某生技醫藥公司關鍵臨床試驗數據公佈前夕，前負責人親友帳戶出現異常大額拋售持股規避重大利空損失，檢方依證券交易法約談涉案人等。",
+      source: "法務部調查局",
+      sourceUrl: "https://www.mjib.gov.tw/",
+      publishedAt: "6 小時前",
+      readTime: "3 分鐘",
+      tags: ["內線交易", "證券交易法", "公司治理", "檢調搜索"],
+      riskLevel: "high",
+      riskDimension: "Governance",
+      isBreaking: false,
+      takeaways: [
+        "涉案關係人規避損失金額估計達數千萬元，檢調已向法院聲請保全扣押",
+        "證券投資人及期貨交易人保護中心（投保中心）評估啟動團體訴訟登記",
+        "櫃買中心要求該公司即刻召開重大訊息記者會說明內控補救措施"
+      ]
+    },
+    {
+      id: "esg-004",
+      categoryId: "esg_risk",
+      title: "連鎖餐飲集團未依法給付國定假日加班工資 勞動局公佈違法企業名單並裁處罰鍰",
+      summary: "直轄市政府勞動局公布最新違反勞動基準法事業單位名單，某知名餐飲集團因連續多次未依法備置出勤紀錄卡及未給付平日與國定假日加班費遭處以累進罰鍰。",
+      source: "直轄市勞動局",
+      sourceUrl: "https://www.mol.gov.tw/",
+      publishedAt: "8 小時前",
+      readTime: "2 分鐘",
+      tags: ["勞基法違法", "未給加班費", "勞檢裁罰", "勞工權益"],
+      riskLevel: "medium",
+      riskDimension: "Social",
+      isBreaking: false,
+      takeaways: [
+        "主管機關限期該集團一個月內補發全體勞工差額工資",
+        "持續列入勞檢高風險專案複查黑名單，若未改善將按次連續處罰",
+        "企業工會發起連署要求公司公開向社會致歉並重啟團體協約協商"
+      ]
+    },
+    {
+      id: "esg-005",
+      categoryId: "esg_risk",
+      title: "知名跨國快時尚服飾品牌遭歐洲環保組織踢爆碳標籤涉嫌嚴重漂綠虛報",
+      summary: "歐洲消費者保護聯盟與跨國環保倡議團體發布跨國聯合調查報告，指某快時尚跨國巨頭標榜之「循環永續再生纖維」產品，經實驗室同位素檢驗超過八成仍為傳統石化聚酯，已向歐盟監管機構正式提起欺詐指控。",
+      source: "環境資訊中心",
+      sourceUrl: "https://e-info.org.tw/",
+      publishedAt: "9 小時前",
+      readTime: "4 分鐘",
+      tags: ["漂綠爭議", "循環經濟", "歐盟監管", "碳足跡虛報"],
+      riskLevel: "medium",
+      riskDimension: "Environmental",
+      isBreaking: false,
+      takeaways: [
+        "歐盟綠色轉型指令明定虛偽誇大永續聲明將面臨全歐年營業額4%以上之鉅額裁罰",
+        "多家跨國零售商已預防性將涉案系列商品下架接受獨立第三方稽核",
+        "投資人ESG永續基金開始調降該公司永續責任評等至觀察名單"
+      ]
+    }
+  ]
+};
+
+// ============================================================================
+// 2. 狀態管理 (Application State)
+// ============================================================================
+const AppState = {
+  currentCategory: "all",
+  searchQuery: "",
+  bookmarkedIds: new Set(JSON.parse(localStorage.getItem("dailypulse_bookmarks") || "[]")),
+  theme: localStorage.getItem("dailypulse_theme") || "light" // 預設典雅淺色模式
+};
+
+// ============================================================================
+// 3. 初始化入口 (Init)
+// ============================================================================
+document.addEventListener("DOMContentLoaded", () => {
+  initTheme();
+  renderDateInfo();
+  renderHeroSection();
+  renderCategoryPills();
+  renderNewsSections();
+  renderEsgRadarStats();
+  bindEventListeners();
+});
+
+// ============================================================================
+// 4. 主題設定 (Light / Dark Theme)
+// ============================================================================
+function initTheme() {
+  document.documentElement.setAttribute("data-theme", AppState.theme);
+  updateThemeIcon();
+}
+
+function toggleTheme() {
+  AppState.theme = AppState.theme === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", AppState.theme);
+  localStorage.setItem("dailypulse_theme", AppState.theme);
+  updateThemeIcon();
+  showToast(`已切換為${AppState.theme === 'dark' ? '深色' : '典雅淺色'}模式`, "info");
+}
+
+function updateThemeIcon() {
+  const icon = document.getElementById("theme-toggle-icon");
+  if (!icon) return;
+  if (AppState.theme === "dark") {
+    icon.className = "fa-solid fa-sun";
+  } else {
+    icon.className = "fa-solid fa-moon";
+  }
+}
+
+// ============================================================================
+// 5. 畫面渲染 (Render Functions)
+// ============================================================================
+function renderDateInfo() {
+  const dateElem = document.getElementById("header-date-text");
+  const updateElem = document.getElementById("header-update-time");
+  if (dateElem) dateElem.textContent = DAILY_NEWS_DATA.dateText;
+  if (updateElem) updateElem.textContent = `更新時間：${DAILY_NEWS_DATA.lastUpdated}`;
+}
+
+function renderHeroSection() {
+  const heroContainer = document.getElementById("hero-section-container");
+  if (!heroContainer) return;
+
+  const breakingItem = DAILY_NEWS_DATA.news.find(n => n.id === DAILY_NEWS_DATA.heroBreakingId) || DAILY_NEWS_DATA.news[0];
+  const cat = DAILY_NEWS_DATA.categories.find(c => c.id === breakingItem.categoryId);
+
+  const takeawaysHtml = (breakingItem.takeaways || []).map(t => `<li>${escapeHtml(t)}</li>`).join("");
+
+  heroContainer.innerHTML = `
+    <div class="hero-card">
+      <div class="hero-glow-effect"></div>
+      <div class="hero-left-content">
+        <div class="hero-tag-row">
+          <span class="breaking-badge"><i class="fa-solid fa-bullhorn"></i> 全球焦點頭條</span>
+          <span class="hero-category-label"><i class="fa-solid ${cat ? cat.icon : 'fa-newspaper'}"></i> ${cat ? cat.name : '重大事件'}</span>
+        </div>
+        <h2 class="hero-title" onclick="openArticleModal('${breakingItem.id}')">${escapeHtml(breakingItem.title)}</h2>
+        <p class="hero-summary">${escapeHtml(breakingItem.summary)}</p>
+        <div class="hero-meta">
+          <span class="hero-meta-item"><i class="fa-solid fa-building"></i> ${escapeHtml(breakingItem.source)}</span>
+          <span class="hero-meta-item"><i class="fa-regular fa-clock"></i> ${escapeHtml(breakingItem.publishedAt)}</span>
+          <span class="hero-meta-item"><i class="fa-regular fa-bookmark"></i> 閱讀約 ${escapeHtml(breakingItem.readTime)}</span>
+        </div>
+      </div>
+      <div class="hero-right-panel">
+        <div class="hero-takeaways-title"><i class="fa-solid fa-wand-magic-sparkles" style="color: #2563eb;"></i> 核心要點精粹分析</div>
+        <ul class="hero-takeaways-list">
+          ${takeawaysHtml}
+        </ul>
+      </div>
+    </div>
+  `;
+}
+
+function renderCategoryPills() {
+  const navContainer = document.getElementById("category-nav-bar");
+  if (!navContainer) return;
+
+  const totalCount = DAILY_NEWS_DATA.news.length;
+
+  let html = `
+    <button class="cat-pill ${AppState.currentCategory === 'all' ? 'active' : ''}" onclick="setCategoryFilter('all')">
+      <i class="fa-solid fa-border-all"></i> 全部板塊
+      <span class="cat-pill-count">${totalCount}</span>
+    </button>
+  `;
+
+  DAILY_NEWS_DATA.categories.forEach(cat => {
+    const count = DAILY_NEWS_DATA.news.filter(n => n.categoryId === cat.id).length;
+    const isActive = AppState.currentCategory === cat.id ? 'active' : '';
+    html += `
+      <button class="cat-pill ${isActive}" onclick="setCategoryFilter('${cat.id}')">
+        <i class="fa-solid ${cat.icon}" style="color: ${cat.color}"></i> ${cat.name}
+        <span class="cat-pill-count">${count}</span>
+      </button>
+    `;
+  });
+
+  navContainer.innerHTML = html;
+}
+
+function renderEsgRadarStats() {
+  const radarContainer = document.getElementById("esg-radar-container");
+  if (!radarContainer) return;
+
+  const esgItems = DAILY_NEWS_DATA.news.filter(n => n.categoryId === "esg_risk");
+  const highRiskCount = esgItems.filter(n => n.riskLevel === "high").length;
+  const medRiskCount = esgItems.filter(n => n.riskLevel === "medium").length;
+  const envCount = esgItems.filter(n => n.riskDimension === "Environmental").length;
+
+  radarContainer.innerHTML = `
+    <div class="esg-radar-banner">
+      <div class="radar-left">
+        <div class="radar-icon-box"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="radar-info">
+          <h3>ESG 負面爭議與法規裁罰雷達監測 <span class="badge-pill" style="font-size:0.75rem; background:#fee2e2; color:#dc2626; padding:0.18rem 0.55rem; border-radius:99px; font-weight:700;">即時監警</span></h3>
+          <p>持續追蹤重大環境排污開罰、工安職災勒令停工、內線交易與勞基法違法企業名單。</p>
+        </div>
+      </div>
+      <div class="radar-metrics">
+        <div class="metric-pill high">
+          <span class="metric-val">${highRiskCount}</span>
+          <span class="metric-label">高風險/裁罰</span>
+        </div>
+        <div class="metric-pill med">
+          <span class="metric-val">${medRiskCount}</span>
+          <span class="metric-label">調查與爭議</span>
+        </div>
+        <div class="metric-pill env">
+          <span class="metric-val">${envCount}</span>
+          <span class="metric-label">環境違規</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderNewsSections() {
+  const mainContainer = document.getElementById("news-sections-container");
+  if (!mainContainer) return;
+
+  const query = AppState.searchQuery.trim().toLowerCase();
+  
+  let visibleCategories = DAILY_NEWS_DATA.categories;
+  if (AppState.currentCategory !== "all") {
+    visibleCategories = visibleCategories.filter(c => c.id === AppState.currentCategory);
+  }
+
+  let fullHtml = "";
+
+  visibleCategories.forEach(cat => {
+    let items = DAILY_NEWS_DATA.news.filter(n => n.categoryId === cat.id);
+
+    if (query) {
+      items = items.filter(n => {
+        const text = `${n.title} ${n.summary} ${n.source} ${n.tags.join(" ")}`.toLowerCase();
+        return text.includes(query);
+      });
+    }
+
+    if (items.length === 0 && query) {
+      return;
+    }
+
+    const cardsHtml = items.map(item => createNewsCardHtml(item, cat)).join("");
+
+    fullHtml += `
+      <section class="category-section" id="section-${cat.id}">
+        <div class="section-header">
+          <div class="section-title-wrapper">
+            <div class="section-icon" style="background-color: ${cat.color}">
+              <i class="fa-solid ${cat.icon}"></i>
+            </div>
+            <h3 class="section-title" style="border-left: 3px solid ${cat.color}; padding-left: 0.55rem;">${cat.name}</h3>
+            <span class="section-desc">${cat.description}</span>
+          </div>
+          <span class="section-count-tag">${items.length} 則重要快訊</span>
+        </div>
+        <div class="news-grid">
+          ${cardsHtml.length > 0 ? cardsHtml : '<p style="color:var(--text-muted); grid-column:1/-1;">此板塊目前無相符資料</p>'}
+        </div>
+      </section>
+    `;
+  });
+
+  if (fullHtml === "") {
+    mainContainer.innerHTML = `
+      <div style="text-align: center; padding: 4rem 1rem; color: var(--text-muted); background: #ffffff; border-radius: 16px; border: 1px solid var(--border-card);">
+        <i class="fa-solid fa-magnifying-glass" style="font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.4;"></i>
+        <h3>找不到符合「${escapeHtml(query)}」的新聞快訊</h3>
+        <p style="margin-top: 0.5rem;">請嘗試不同關鍵字，或清除搜尋條件。</p>
+        <button class="action-btn btn-primary" onclick="clearSearch()" style="margin-top: 1rem;">清除搜尋條件</button>
+      </div>
+    `;
+  } else {
+    mainContainer.innerHTML = fullHtml;
+  }
+}
+
+function createNewsCardHtml(item, category) {
+  const isBookmarked = AppState.bookmarkedIds.has(item.id);
+  const tagsHtml = item.tags.slice(0, 3).map(t => `<span class="tag-chip">#${escapeHtml(t)}</span>`).join("");
+
+  let riskBadgeHtml = "";
+  if (item.categoryId === "esg_risk") {
+    let riskClass = item.riskLevel === "high" ? "high" : (item.riskLevel === "medium" ? "medium" : "low");
+    let riskLabel = item.riskLevel === "high" ? "重大裁罰" : (item.riskLevel === "medium" ? "調查爭議" : "合規注意");
+    riskBadgeHtml = `<span class="risk-badge ${riskClass}"><i class="fa-solid fa-triangle-exclamation"></i> ${riskLabel}</span>`;
+  }
+
+  return `
+    <article class="news-card" onclick="openArticleModal('${item.id}')">
+      <div>
+        <div class="card-meta-top">
+          <span class="card-source-badge">
+            <i class="fa-solid fa-newspaper" style="font-size:0.7rem; color:${category.color}"></i>
+            ${escapeHtml(item.source)}
+          </span>
+          <div style="display:flex; align-items:center; gap:0.5rem;">
+            ${riskBadgeHtml}
+            <span class="card-time"><i class="fa-regular fa-clock"></i> ${escapeHtml(item.publishedAt)}</span>
+          </div>
+        </div>
+        <h4 class="card-title">${escapeHtml(item.title)}</h4>
+        <p class="card-summary">${escapeHtml(item.summary)}</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-tags">
+          ${tagsHtml}
+        </div>
+        <div class="card-actions" onclick="event.stopPropagation()">
+          <button class="card-action-btn ${isBookmarked ? 'bookmarked' : ''}" title="加入收藏" onclick="toggleBookmark('${item.id}', this)">
+            <i class="${isBookmarked ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
+          </button>
+          <button class="card-action-btn" title="查看重點" onclick="openArticleModal('${item.id}')">
+            <i class="fa-solid fa-up-right-from-square"></i>
+          </button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+// ============================================================================
+// 6. 互動操作 (Filter, Search, Modal, Bookmark)
+// ============================================================================
+function setCategoryFilter(catId) {
+  AppState.currentCategory = catId;
+  renderCategoryPills();
+  renderNewsSections();
+
+  if (catId !== "all") {
+    const targetElem = document.getElementById(`section-${catId}`);
+    if (targetElem) {
+      targetElem.scrollIntoView({ behavior: "smooth" });
+    }
+  }
+}
+
+function handleSearchInput(e) {
+  AppState.searchQuery = e.target.value;
+  const clearBtn = document.getElementById("search-clear-btn");
+  if (clearBtn) {
+    clearBtn.style.display = AppState.searchQuery ? "block" : "none";
+  }
+  renderNewsSections();
+}
+
+function clearSearch() {
+  AppState.searchQuery = "";
+  const input = document.getElementById("search-input");
+  if (input) input.value = "";
+  const clearBtn = document.getElementById("search-clear-btn");
+  if (clearBtn) clearBtn.style.display = "none";
+  renderNewsSections();
+}
+
+function openArticleModal(newsId) {
+  const item = DAILY_NEWS_DATA.news.find(n => n.id === newsId);
+  if (!item) return;
+
+  const cat = DAILY_NEWS_DATA.categories.find(c => c.id === item.categoryId);
+  const modal = document.getElementById("article-modal");
+  const modalContent = document.getElementById("modal-dynamic-content");
+
+  let esgWarningBox = "";
+  if (item.categoryId === "esg_risk") {
+    let riskColor = item.riskLevel === "high" ? "#dc2626" : "#d97706";
+    let bgBox = item.riskLevel === "high" ? "#fee2e2" : "#fef3c7";
+    esgWarningBox = `
+      <div style="background: ${bgBox}; border: 1px solid ${riskColor}40; border-radius: 8px; padding: 0.85rem 1.15rem; margin-bottom: 1.25rem;">
+        <span style="color: ${riskColor}; font-weight: 700; font-size: 0.88rem; display: flex; align-items: center; gap: 0.45rem;">
+          <i class="fa-solid fa-shield-virus"></i> ESG 維度：${escapeHtml(item.riskDimension || '綜合合規')} · 風險等級：${item.riskLevel === 'high' ? '高風險（重大處罰/停工）' : '中度爭議事件'}
+        </span>
+      </div>
+    `;
+  }
+
+  const takeawaysList = (item.takeaways || []).map(t => `<li>${escapeHtml(t)}</li>`).join("");
+
+  modalContent.innerHTML = `
+    <div class="modal-header">
+      <div class="modal-badges">
+        <span class="card-source-badge" style="background:${cat.color}15; color:${cat.color}; border-color:${cat.color}35;">
+          <i class="fa-solid ${cat.icon}"></i> ${cat.name}
+        </span>
+        <span class="card-source-badge">來源：${escapeHtml(item.source)}</span>
+        <span class="card-time"><i class="fa-regular fa-clock"></i> ${escapeHtml(item.publishedAt)}</span>
+      </div>
+      <h3 class="modal-title">${escapeHtml(item.title)}</h3>
+    </div>
+    ${esgWarningBox}
+    <div class="modal-body">
+      <p>${escapeHtml(item.summary)}</p>
+    </div>
+    <div class="modal-takeaways-box">
+      <h4><i class="fa-solid fa-bolt" style="color: #2563eb;"></i> 核心要點精粹與深入解析</h4>
+      <ul class="modal-takeaways-list">
+        ${takeawaysList}
+      </ul>
+    </div>
+    <div class="modal-footer">
+      <div style="font-size:0.84rem; color:var(--text-muted); font-weight:500;">
+        預估閱讀時間：${escapeHtml(item.readTime)}
+      </div>
+      <a href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noopener noreferrer" class="modal-link-btn">
+        <span>閱讀報導全文</span> <i class="fa-solid fa-arrow-up-right-from-square"></i>
+      </a>
+    </div>
+  `;
+
+  modal.classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeArticleModal() {
+  const modal = document.getElementById("article-modal");
+  if (modal) {
+    modal.classList.remove("open");
+    document.body.style.overflow = "";
+  }
+}
+
+function toggleBookmark(newsId, btn) {
+  if (AppState.bookmarkedIds.has(newsId)) {
+    AppState.bookmarkedIds.delete(newsId);
+    btn.classList.remove("bookmarked");
+    btn.innerHTML = '<i class="fa-regular fa-bookmark"></i>';
+    showToast("已從個人收藏中移除", "info");
+  } else {
+    AppState.bookmarkedIds.add(newsId);
+    btn.classList.add("bookmarked");
+    btn.innerHTML = '<i class="fa-solid fa-bookmark"></i>';
+    showToast("已成功加入個人收藏", "success");
+  }
+  localStorage.setItem("dailypulse_bookmarks", JSON.stringify([...AppState.bookmarkedIds]));
+}
+
+// ============================================================================
+// 7. 匯出每日簡報 (Markdown Export)
+// ============================================================================
+function copyDailyDigestMarkdown() {
+  let md = `# DailyPulse 每日重點新聞彙整簡報\n`;
+  md += `**日期**：${DAILY_NEWS_DATA.dateText} | **最後更新**：${DAILY_NEWS_DATA.lastUpdated}\n\n`;
+
+  DAILY_NEWS_DATA.categories.forEach(cat => {
+    const items = DAILY_NEWS_DATA.news.filter(n => n.categoryId === cat.id);
+    if (items.length === 0) return;
+
+    md += `## 📌 ${cat.name}\n\n`;
+    items.forEach((item, idx) => {
+      md += `### ${idx + 1}. [${item.title}](${item.sourceUrl}) - *${item.source}*\n`;
+      md += `> ${item.summary}\n\n`;
+      if (item.takeaways && item.takeaways.length > 0) {
+        md += `**核心要點：**\n`;
+        item.takeaways.forEach(t => {
+          md += `- ${t}\n`;
+        });
+        md += `\n`;
+      }
+    });
+  });
+
+  navigator.clipboard.writeText(md).then(() => {
+    showToast("已成功複製今日七大板塊 Markdown 簡報至剪貼簿！", "success");
+  }).catch(() => {
+    showToast("複製失敗，請手動選取", "info");
+  });
+}
+
+// ============================================================================
+// 8. 模擬即時抓取 (Simulate Live Refresh)
+// ============================================================================
+function simulateLiveFetch() {
+  const refreshBtn = document.getElementById("refresh-btn");
+  if (refreshBtn) {
+    refreshBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span>同步中...</span>';
+    refreshBtn.disabled = true;
+  }
+
+  showToast("正在連線七大板塊新聞源同步最新資訊...", "info");
+
+  setTimeout(() => {
+    const now = new Date();
+    const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    DAILY_NEWS_DATA.lastUpdated = `今日 ${timeStr}`;
+
+    renderDateInfo();
+    renderHeroSection();
+    renderNewsSections();
+
+    if (refreshBtn) {
+      refreshBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> <span>即時更新</span>';
+      refreshBtn.disabled = false;
+    }
+    showToast("七大板塊最新新聞已同步完畢！", "success");
+  }, 1000);
+}
+
+// ============================================================================
+// 9. 吐司提示與輔助工具 (Toast & Utilities)
+// ============================================================================
+function showToast(message, type = "info") {
+  const container = document.getElementById("toast-container");
+  if (!container) return;
+
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `
+    <i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-info'}"></i>
+    <span>${escapeHtml(message)}</span>
+  `;
+
+  container.appendChild(toast);
+  setTimeout(() => toast.classList.add("show"), 10);
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 3200);
+}
+
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function bindEventListeners() {
+  const searchInput = document.getElementById("search-input");
+  if (searchInput) {
+    searchInput.addEventListener("input", handleSearchInput);
+  }
+
+  const modal = document.getElementById("article-modal");
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeArticleModal();
+    });
+  }
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeArticleModal();
+  });
+}
+
+  </script>
+</body>
+</html>
